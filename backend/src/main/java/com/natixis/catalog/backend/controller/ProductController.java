@@ -17,8 +17,12 @@ public class ProductController {
 
   @GetMapping("/product")
   public ResponseEntity<List<ProductDto>> getProducts() {
-
     return ResponseEntity.ok(productService.getProducts());
+  }
+
+  @GetMapping("/product/{id}")
+  public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+    return ResponseEntity.ok(productService.getProductById(id));
   }
 
   @PostMapping("/product")
@@ -33,8 +37,8 @@ public class ProductController {
   }
 
   @PutMapping("/product/{id}")
-  public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
+  public ResponseEntity<ProductDto> updateProduct(
+      @PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
     return ResponseEntity.ok(productService.updateProduct(id, productDto));
   }
-
 }

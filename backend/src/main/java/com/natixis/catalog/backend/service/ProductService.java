@@ -5,7 +5,6 @@ import com.natixis.catalog.backend.entity.Product;
 import com.natixis.catalog.backend.exception.AppException;
 import com.natixis.catalog.backend.mapper.ProductMapper;
 import com.natixis.catalog.backend.repository.ProductRepository;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,12 +14,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductService {
 
+  public static final String PRODUCT_NOT_FOUND = "Product not found";
   private final ProductRepository productRepository;
   private final ProductMapper productMapper;
 
   public List<ProductDto> getProducts() {
-
     return productMapper.toProductDtoList(productRepository.findAll());
+  }
+
+  public ProductDto getProductById(Long id) {
+    Product product =
+        productRepository
+            .findById(id)
+            .orElseThrow(() -> new AppException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+    return productMapper.toProductDto(product);
   }
 
   public ProductDto createProduct(ProductDto productDto) {
@@ -33,7 +41,7 @@ public class ProductService {
     Product product =
         productRepository
             .findById(id)
-            .orElseThrow(() -> new AppException("Product not found", HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new AppException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND));
 
     ProductDto productDto = productMapper.toProductDto(product);
 
@@ -46,14 +54,12 @@ public class ProductService {
     Product product =
         productRepository
             .findById(id)
-            .orElseThrow(() -> new AppException("Product not found", HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new AppException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND));
 
     productMapper.updateProduct(product, productDto);
 
     Product savedProduct = productRepository.save(product);
 
     return productMapper.toProductDto(savedProduct);
-
-
   }
 }

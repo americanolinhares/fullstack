@@ -7,7 +7,6 @@ import com.natixis.catalog.backend.service.AuthenticationService;
 import com.natixis.catalog.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,6 @@ public class UserController {
 
   @PostMapping("/register")
   public ResponseEntity<User> register(@Valid @RequestBody User user) {
-
     return ResponseEntity.ok(userService.register(user));
   }
 

@@ -16,17 +16,16 @@ import lombok.*;
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Username cannot be blank")
-    private String username;
+  @Column(nullable = false)
+  @NotBlank(message = "Username cannot be blank")
+  private String username;
 
-    @Column
-    @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String password;
-
+  @Column
+  @NotEmpty(message = "Password cannot be empty")
+  @Size(min = 8, message = "Password must be at least 8 characters long")
+  private String password;
 }

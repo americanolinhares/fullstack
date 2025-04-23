@@ -10,13 +10,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    @Mapping(target = "id", ignore = true)
-    Product toProduct(ProductDto productDto);
+  @Mapping(target = "id", ignore = true)
+  Product toProduct(ProductDto productDto);
 
-    ProductDto toProductDto(Product product);
+  ProductDto toProductDto(Product product);
 
-    List<ProductDto> toProductDtoList(List<Product> products);
+  List<ProductDto> toProductDtoList(List<Product> products);
 
-    @Mapping(target = "id", ignore = true)
-    void updateProduct(@MappingTarget Product product, ProductDto productDto);
+  @Mapping(target = "id", ignore = true)
+  void updateProduct(@MappingTarget Product product, ProductDto productDto);
 }

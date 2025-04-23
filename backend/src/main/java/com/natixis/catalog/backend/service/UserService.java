@@ -3,17 +3,18 @@ package com.natixis.catalog.backend.service;
 import com.natixis.catalog.backend.entity.User;
 import com.natixis.catalog.backend.exception.AppException;
 import com.natixis.catalog.backend.repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
   private final BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
-  @Autowired private UserRepository userRepository;
+
+  private final UserRepository userRepository;
 
   public User register(User user) {
     if (userRepository.existsByUsername(user.getUsername())) {
