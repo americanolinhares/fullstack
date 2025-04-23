@@ -10,8 +10,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    //Product toProduct(ProductDto productDto);
-    @Mapping(target = "id", ignore = true) // Ignora o campo 'id' ao converter
+    @Mapping(target = "id", ignore = true)
     Product toProduct(ProductDto productDto);
 
     ProductDto toProductDto(Product product);

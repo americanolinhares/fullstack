@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:14
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: "backend"
+      POSTGRES_PASSWORD: "backend"
+      POSTGRES_DB: "backend"
+    ports:
+      - "5432:5432"
+
+  spring-app:
+    image: backend-natixis:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/backend
+    depends_on:
+      - postgres-db
+
+  spa-app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - spring-app
