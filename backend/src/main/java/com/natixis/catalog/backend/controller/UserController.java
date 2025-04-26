@@ -1,12 +1,13 @@
 package com.natixis.catalog.backend.controller;
 
-import com.natixis.catalog.backend.dto.AuthenticationRequestDto;
-import com.natixis.catalog.backend.dto.AuthenticationResponseDto;
-import com.natixis.catalog.backend.entity.User;
+import com.natixis.catalog.backend.dto.UserAuthenticationResponseDto;
+import com.natixis.catalog.backend.dto.UserRegistrationResponseDto;
+import com.natixis.catalog.backend.dto.UserRequestDto;
 import com.natixis.catalog.backend.service.AuthenticationService;
 import com.natixis.catalog.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,12 +22,15 @@ public class UserController {
   private final AuthenticationService authenticationService;
 
   @PostMapping("/register")
-  public ResponseEntity<User> register(@Valid @RequestBody User user) {
-    return ResponseEntity.ok(userService.register(user));
+  public ResponseEntity<UserRegistrationResponseDto> register(@Valid @RequestBody UserRequestDto userRequest) {
+    UserRegistrationResponseDto userResponse = userService.register(userRequest);
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(new UserRegistrationResponseDto(userResponse.username()));
   }
 
   @PostMapping("/login")
-  public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto authenticationRequestDto) {
-    return ResponseEntity.ok(authenticationService.authenticate(authenticationRequestDto));
+  public ResponseEntity<UserAuthenticationResponseDto> login(@Valid @RequestBody UserRequestDto user) {
+    return ResponseEntity.ok(authenticationService.authenticate(user));
   }
 }

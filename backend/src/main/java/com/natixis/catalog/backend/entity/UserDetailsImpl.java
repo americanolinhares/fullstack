@@ -2,10 +2,13 @@ package com.natixis.catalog.backend.entity;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Builder
 public class UserDetailsImpl implements UserDetails {
 
   private User user;

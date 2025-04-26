@@ -7,5 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BackendApplicationTests {
 
   @Test
-  void contextLoads() {}
+  void whenSpringContextIsBootstrapped_thenNoExceptions() {
+    // This test case verifies that the Spring context is bootstrapped successfully.
+    // No exceptions should be thrown during the initialization process.
+  }
 }

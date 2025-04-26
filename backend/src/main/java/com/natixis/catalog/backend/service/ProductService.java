@@ -14,11 +14,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductService {
 
-  public static final String PRODUCT_NOT_FOUND = "Product not found";
+  public static final String PRODUCT_NOT_FOUND_WITH_ID = "Product not found with id ";
   private final ProductRepository productRepository;
   private final ProductMapper productMapper;
 
-  public List<ProductDto> getProducts() {
+  public List<ProductDto> getAllProducts() {
+
     return productMapper.toProductDtoList(productRepository.findAll());
   }
 
@@ -26,7 +27,8 @@ public class ProductService {
     Product product =
         productRepository
             .findById(id)
-            .orElseThrow(() -> new AppException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND));
+            .orElseThrow(
+                () -> new AppException(PRODUCT_NOT_FOUND_WITH_ID + id, HttpStatus.NOT_FOUND));
 
     return productMapper.toProductDto(product);
   }
@@ -34,6 +36,7 @@ public class ProductService {
   public ProductDto createProduct(ProductDto productDto) {
     Product product = productMapper.toProduct(productDto);
     Product savedProduct = productRepository.save(product);
+
     return productMapper.toProductDto(savedProduct);
   }
 
@@ -41,10 +44,10 @@ public class ProductService {
     Product product =
         productRepository
             .findById(id)
-            .orElseThrow(() -> new AppException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND));
+            .orElseThrow(
+                () -> new AppException(PRODUCT_NOT_FOUND_WITH_ID + id, HttpStatus.NOT_FOUND));
 
     ProductDto productDto = productMapper.toProductDto(product);
-
     productRepository.deleteById(id);
 
     return productDto;
@@ -54,10 +57,10 @@ public class ProductService {
     Product product =
         productRepository
             .findById(id)
-            .orElseThrow(() -> new AppException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND));
+            .orElseThrow(
+                () -> new AppException(PRODUCT_NOT_FOUND_WITH_ID + id, HttpStatus.NOT_FOUND));
 
     productMapper.updateProduct(product, productDto);
-
     Product savedProduct = productRepository.save(product);
 
     return productMapper.toProductDto(savedProduct);

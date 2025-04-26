@@ -8,8 +8,6 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Builder
 @Data
@@ -20,12 +18,13 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
-  @Column(nullable = false)
-  @NotBlank(message = "Username cannot be blank")
+  @Column
+  @NotBlank
+  @Size(min = 3, max = 20)
   private String username;
 
   @Column
-  @NotEmpty(message = "Password cannot be empty")
-  @Size(min = 8, message = "Password must be at least 8 characters long")
+  @NotBlank
+  @Size(min = 8)
   private String password;
 }

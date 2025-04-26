@@ -1,8 +1,8 @@
 package com.natixis.catalog.backend.service;
 
-import com.natixis.catalog.backend.dto.AuthenticationRequestDto;
-import com.natixis.catalog.backend.dto.AuthenticationResponseDto;
+import com.natixis.catalog.backend.dto.UserAuthenticationResponseDto;
 import lombok.RequiredArgsConstructor;
+import com.natixis.catalog.backend.dto.UserRequestDto;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,15 +15,16 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
 
-  public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
+  public UserAuthenticationResponseDto authenticate(UserRequestDto request) {
 
     Authentication authentication =
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
     if (authentication.isAuthenticated()) {
-      String token = jwtService.generateToken(request.username());
-      return new AuthenticationResponseDto(token);
+      String token = jwtService.generateToken(request.getUsername());
+      return new UserAuthenticationResponseDto(token);
     }
-    return new AuthenticationResponseDto("failed");
+
+    return new UserAuthenticationResponseDto("Failed");
   }
 }
