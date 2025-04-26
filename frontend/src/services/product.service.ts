@@ -3,13 +3,9 @@ import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:8080/';
 
-class UserService {
+class ProductService {
 
-  getPublicContent() {
-    return axios.get(API_URL + 'product', { headers: authHeader() });
-  }
-
-  getUserBoard() {
+  getAllProducts() {
     return axios.get(API_URL + 'product', { headers: authHeader() });
   }
 
@@ -21,9 +17,9 @@ class UserService {
     return axios.put(API_URL + `product/${product.id}`, product, { headers: authHeader() });
   }
 
-  addProduct(product: { name: string; description: string }) {
+  createProduct(product: { name: string; description: string }) {
     return axios.post(API_URL + 'product', product, { headers: authHeader() });
   }
 }
 
-export default new UserService();
+export default new ProductService();

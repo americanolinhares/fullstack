@@ -1,5 +1,5 @@
 import { Component, ChangeEvent } from "react";
-import UserService from "../services/user.service";
+import UserService from "../services/product.service";
 import EventBus from "../common/EventBus";
 
 type Props = {};
@@ -14,9 +14,10 @@ type State = {
     products: Product[];
     selectedProduct: Product | null;
     newProduct: Product;
+    errorMessage?: string;
 };
 
-export default class BoardUser extends Component<Props, State> {
+export default class Dashboard extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -32,12 +33,12 @@ export default class BoardUser extends Component<Props, State> {
     }
 
     fetchProducts = () => {
-        UserService.getUserBoard().then(
+        UserService.getAllProducts().then(
             (response) => {
                 this.setState({ products: response.data });
             },
             (error) => {
-                console.error("Erro ao buscar produtos:", error);
+                console.error("Error when finding Products:", error);
                 if (error.response && error.response.status === 401) {
                     EventBus.dispatch("logout");
                 }
@@ -67,10 +68,17 @@ export default class BoardUser extends Component<Props, State> {
 
     handleUpdate = () => {
         if (this.state.selectedProduct) {
-            UserService.updateProduct(this.state.selectedProduct).then(() => {
-                this.setState({ selectedProduct: null });
-                this.fetchProducts();
-            });
+            UserService.updateProduct(this.state.selectedProduct).then(
+                () => {
+                    this.setState({ selectedProduct: null, errorMessage: "" }); // Limpa as mensagens de erro
+                    this.fetchProducts();
+                },
+                (error) => {
+                    const errors = error.response?.data ?? [];
+                    const errorMessage = errors.map((err: { message: string }) => err.message).join(" ");
+                    this.setState({ errorMessage });
+                }
+            );
         }
     };
 
@@ -85,10 +93,24 @@ export default class BoardUser extends Component<Props, State> {
     };
 
     handleAdd = () => {
-        UserService.addProduct(this.state.newProduct).then(() => {
-            this.setState({ newProduct: { id: 0, name: "", description: "" } });
-            this.fetchProducts();
-        });
+        UserService.createProduct(this.state.newProduct).then(
+            () => {
+                this.setState({
+                    newProduct: { id: 0, name: "", description: "" },
+                    errorMessage: ""
+                });
+                this.fetchProducts();
+            },
+            (error) => {
+                const errors = error.response?.data || [];
+                const errorMessage = errors.map((err: { message: string }) => err.message).join(" ");
+                this.setState({ errorMessage });
+            }
+        );
+    };
+
+    clearErrorMessage = () => {
+        this.setState({ errorMessage: "" });
     };
 
     render() {
@@ -97,15 +119,26 @@ export default class BoardUser extends Component<Props, State> {
         return (
             <div className="container mt-4">
                 <header className="jumbotron">
-                    <h3 className="text-center">Lista de Produtos</h3>
+                    <h3 className="text-center">Product List</h3>
                 </header>
+                {this.state.errorMessage && (
+                    <div className="alert alert-danger alert-dismissible" role="alert">
+                        {this.state.errorMessage}
+                        <button
+                            type="button"
+                            className="btn-close"
+                            aria-label="Close"
+                            onClick={this.clearErrorMessage}
+                        ></button>
+                    </div>
+                )}
                 <table className="table table-striped table-hover">
                     <thead className="thead-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Ações</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -119,13 +152,13 @@ export default class BoardUser extends Component<Props, State> {
                                     className="btn btn-danger btn-sm me-2"
                                     onClick={() => this.handleDelete(product.id)}
                                 >
-                                    Deletar
+                                    Delete
                                 </button>
                                 <button
                                     className="btn btn-primary btn-sm"
                                     onClick={() => this.handleSelect(product)}
                                 >
-                                    Selecionar
+                                    Select to Update
                                 </button>
                             </td>
                         </tr>
@@ -135,10 +168,10 @@ export default class BoardUser extends Component<Props, State> {
 
                 {selectedProduct && (
                     <div className="mt-4">
-                        <h4>Atualizar Produto</h4>
+                        <h4>Update Produto</h4>
                         <form>
                             <div className="form-group mb-3">
-                                <label>Nome</label>
+                                <label>Name</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -148,7 +181,7 @@ export default class BoardUser extends Component<Props, State> {
                                 />
                             </div>
                             <div className="form-group mb-3">
-                                <label>Descrição</label>
+                                <label>Description</label>
                                 <input
                                     type="text"
                                     name="description"
@@ -162,17 +195,18 @@ export default class BoardUser extends Component<Props, State> {
                                 className="btn btn-success"
                                 onClick={this.handleUpdate}
                             >
-                                Atualizar
+                                Update
                             </button>
                         </form>
                     </div>
                 )}
 
                 <div className="mt-4">
-                    <h4>Adicionar Novo Produto</h4>
+                    <h4>Create Product</h4>
+
                     <form>
                         <div className="form-group mb-3">
-                            <label>Nome</label>
+                            <label>Name</label>
                             <input
                                 type="text"
                                 name="name"
@@ -182,7 +216,7 @@ export default class BoardUser extends Component<Props, State> {
                             />
                         </div>
                         <div className="form-group mb-3">
-                            <label>Descrição</label>
+                            <label>Description</label>
                             <input
                                 type="text"
                                 name="description"
@@ -196,7 +230,7 @@ export default class BoardUser extends Component<Props, State> {
                             className="btn btn-primary"
                             onClick={this.handleAdd}
                         >
-                            Adicionar
+                            Create
                         </button>
                     </form>
                 </div>

@@ -1,7 +1,6 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { Formik, Field, Form } from "formik";
 
 import AuthService from "../services/auth.service";
 
@@ -11,8 +10,7 @@ type State = {
   redirect: string | null,
   username: string,
   password: string,
-  loading: boolean,
-  message: string
+  errorMessage?: string
 };
 
 export default class Login extends Component<Props, State> {
@@ -24,8 +22,7 @@ export default class Login extends Component<Props, State> {
       redirect: null,
       username: "",
       password: "",
-      loading: false,
-      message: ""
+      errorMessage: "",
     };
   }
 
@@ -33,58 +30,44 @@ export default class Login extends Component<Props, State> {
     const currentUser = AuthService.getCurrentUser();
 
     if (currentUser) {
-      this.setState({ redirect: "/home" });
-    };
+      this.setState({ redirect: "/dashboard" });
+    }
   }
 
   componentWillUnmount() {
     window.location.reload();
   }
 
-  validationSchema() {
-    return Yup.object().shape({
-      username: Yup.string().required("This field is required!"),
-      password: Yup.string().required("This field is required!"),
-    });
-  }
 
   handleLogin(formValue: { username: string; password: string }) {
     const { username, password } = formValue;
 
-    this.setState({
-      message: "",
-      loading: true
-    });
-
-
     AuthService.login(username, password).then(
       () => {
         this.setState({
-          redirect: "/home"
+          redirect: "/dashboard"
         });
       },
-      error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        this.setState({
-          loading: false,
-          message: resMessage
-        });
-      }
+        (error) => {
+          if (error.response && error.response.status === 401) {
+            this.setState({ errorMessage: "Invalid credentials. Please try again." });
+          } else {
+          const errors = error.response?.data ?? [];
+          const errorMessage = errors.map((err: { message: string }) => err.message).join(" ");
+          this.setState({ errorMessage });
+          }
+        }
     );
   }
+
+    clearErrorMessage = () => {
+        this.setState({ errorMessage: "" });
+    };
 
   render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} />
     }
-
-    const { loading, message } = this.state;
 
     const initialValues = {
       username: "",
@@ -92,60 +75,54 @@ export default class Login extends Component<Props, State> {
     };
 
     return (
-      <div className="col-md-12">
-        <div className="card card-container">
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
-
-          <Formik
-            initialValues={initialValues}
-            validationSchema={this.validationSchema}
-            onSubmit={this.handleLogin}
-          >
-            <Form>
-              <div className="form-group">
-                <label htmlFor="username">Username</label>
-                <Field name="username" type="text" className="form-control" />
-                <ErrorMessage
-                  name="username"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <Field name="password" type="password" className="form-control" />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="alert alert-danger"
-                />
-              </div>
-
-              <div className="form-group">
-                <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                  {loading && (
-                    <span className="spinner-border spinner-border-sm"></span>
-                  )}
-                  <span>Login</span>
-                </button>
-              </div>
-
-              {message && (
-                <div className="form-group">
-                  <div className="alert alert-danger" role="alert">
-                    {message}
+        <div>
+          <header className="jumbotron">
+            <h3 className="text-center">Login Page</h3>
+          </header>
+          <div className="col-md-12">
+            <div className="card card-container">
+              <img
+                  src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+                  alt="profile-img"
+                  className="profile-img-card"
+              />
+              {this.state.errorMessage && (
+                  <div className="alert alert-danger alert-dismissible" role="alert">
+                    {this.state.errorMessage}
+                    <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        onClick={this.clearErrorMessage}
+                    ></button>
                   </div>
-                </div>
               )}
-            </Form>
-          </Formik>
+
+              <Formik
+                  initialValues={initialValues}
+                  onSubmit={this.handleLogin}
+              >
+                <Form>
+                  <div className="form-group">
+                    <label htmlFor="username">Username</label>
+                    <Field name="username" type="text" className="form-control"/>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <Field name="password" type="password" className="form-control"/>
+                  </div>
+
+                  <div className="form-group">
+                    <button type="submit" className="btn btn-primary btn-block">
+                      <span>Login</span>
+                    </button>
+                  </div>
+                </Form>
+              </Formik>
+            </div>
+          </div>
         </div>
-      </div>
     );
   }
 }

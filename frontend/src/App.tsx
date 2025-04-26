@@ -8,7 +8,7 @@ import IUser from './types/user.type';
 
 import Login from "./components/login.component";
 import Register from "./components/register.component";
-import BoardUser from "./components/board-user.component";
+import Dashboard from "./components/dashboard.component";
 
 import EventBus from "./common/EventBus";
 
@@ -62,8 +62,8 @@ class App extends Component<Props, State> {
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
+              <Link to={"/dashboard"} className="nav-link">
+                Dashboard
               </Link>
             </li>
           </div>
@@ -86,7 +86,7 @@ class App extends Component<Props, State> {
 
               <li className="nav-item">
                 <Link to={"/register"} className="nav-link">
-                  Sign Up
+                  Register
                 </Link>
               </li>
             </div>
@@ -96,7 +96,7 @@ class App extends Component<Props, State> {
         <div className="container mt-3">
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/home" element={<BoardUser />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
