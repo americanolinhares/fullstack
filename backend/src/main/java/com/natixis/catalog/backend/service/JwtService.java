@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-  private String secretKey = "";
+  private String secretKey;
 
   public JwtService() {
     try {
