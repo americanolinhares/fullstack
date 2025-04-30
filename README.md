@@ -187,11 +187,11 @@ Postman files are included in the repository to help you test the API endpoints.
 1. Open Postman.
 2. Click on **Import** in the top-left corner.
 3. Import the following files from the repository:
-    - `Natixis API Collection.postman_collection.json`: Contains pre-configured requests for all API endpoints.
-    - `NatixisEnviroment.postman_environment.json`: Contains environment variables like `accessToken` to simplify testing.
+    - `Acme API Collection.postman_collection.json`: Contains pre-configured requests for all API endpoints.
+    - `AcmeEnviroment.postman_environment.json`: Contains environment variables like `accessToken` to simplify testing.
 
 ### Using the Collection
-1. Select the imported environment (`NatixisEnviroment`) in Postman.
+1. Select the imported environment (`AcmeEnviroment`) in Postman.
 2. Use the pre-configured requests in the collection to test the API endpoints. The `Authorization` header will automatically include the token.
 3. Run the collection to test all endpoints in sequence.
 

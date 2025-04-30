@@ -13,7 +13,7 @@ services:
       - "5432:5432"
 
   spring-app:
-    image: backend-natixis:latest
+    image: backend-acme:latest
     ports:
       - "8080:8080"
     environment:

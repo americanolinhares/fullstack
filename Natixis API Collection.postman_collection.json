@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "701f6ea9-3628-4dad-9040-764e0d19d248",
-		"name": "Natixis API Collection",
+		"name": "Acme API Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3056025"
 	},
@@ -83,7 +83,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"natixis\",\r\n    \"password\": \"natixis\"\r\n}",
+					"raw": "{\r\n    \"username\": \"acme\",\r\n    \"password\": \"acme\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
